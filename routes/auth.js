@@ -1,6 +1,6 @@
 const Joi = require('joi');
 const _ = require('lodash');
-const {generateAuthToken, searchUserEmail, validatePassword} = require('../models/users');
+const {generateAuthToken, Users, validatePassword} = require('../models/users');
 const express = require('express');
 const router = express.Router();
 
@@ -9,7 +9,7 @@ router.post('/', async (req, res) => {
     
     if(response.error) return res.status(400).send(response.error.details[0].message);
 
-    let user = await searchUserEmail(req.body.email);
+    let user = await Users.findOne({ email: req.body.email });
     if(!user) return res.status(400).send("Invalid mail or password");
 
     const validPassword = await validatePassword(user, req.body.password);

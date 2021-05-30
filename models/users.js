@@ -49,7 +49,9 @@ function validateUser (user) {
     });
     return schema.validate(user);
 }
+
 const Users = mongoose.model("User", userSchema);
+
 exports.validatePassword = validatePassword;
 exports.generateAuthToken = generateAuthToken;
 exports.validate = validateUser;

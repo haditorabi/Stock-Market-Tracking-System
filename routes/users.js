@@ -12,7 +12,7 @@ router.get('/me', auth, async (req, res) => {
 router.post('/balance', auth, async (req, res) => {
     const { error } = validateBalance(req.body); 
     if (error) return res.status(400).send(error.details[0].message);
-    console.log(req.user);
+    // console.log(req.user);
     let user = await Users.findOne({ email: req.user.email });
   
     user.balance = req.body.balance;

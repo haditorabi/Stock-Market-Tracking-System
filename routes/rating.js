@@ -38,7 +38,7 @@ router.post('/', auth, async (req, res) => {
 
 router.get('/:productId', async (req, res) => {
 const product = await products.findById(req.params.productId);
-// console.log(product)
+if (!product) return res.status(400).send('Invalid product.');
 const rate = ratings.aggregate([
     {
       '$project': {
@@ -58,8 +58,8 @@ const rate = ratings.aggregate([
       }
     }
   ]).exec((err, rating) => {
-    if (!rate) return res.status(404).send('The rating with the given ID was not found.');
-    res.send(rating[0].avg_rate);
+    if (!rating) return res.status(404).send('The rating with the given ID was not found.');
+    res.send((rating[0].avg_rate).toString());
 });
 });
 

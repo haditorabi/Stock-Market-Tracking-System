@@ -8,13 +8,12 @@ router.get('/', async (req, res) => {
   res.send(product);
 });
 
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
   const { error } = validate(req.body); 
   if (error) return res.status(400).send(error.details[0].message);
-
-
   const product = new products({ 
     name: req.body.name,
+    price: req.body.price,
     numberInStock: req.body.numberInStock,
   });
   await product.save();
@@ -25,8 +24,8 @@ router.post('/', async (req, res) => {
 router.put('/:id', auth, async (req, res) => {
   const validObj = mongoose.isValidObjectId(req.params.id); 
   if (!validObj) return res.status(400).send("invalid ID");
-
-  const { error } = validate(req.body); 
+  const { error } = validate(req.body);
+  // console.log(error.details[0].message);
   if (error) return res.status(400).send(error.details[0].message);
 
 
@@ -53,8 +52,10 @@ router.delete('/:id', auth, async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-  const product = await products.findById(req.params.id);
+  const validObj = mongoose.isValidObjectId(req.params.id); 
+  if (!validObj) return res.status(404).send("Invalid ID");
 
+  const product = await products.findById(req.params.id);
   if (!product) return res.status(404).send('The product with the given ID was not found.');
 
   res.send(product);
